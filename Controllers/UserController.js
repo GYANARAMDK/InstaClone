@@ -4,7 +4,6 @@ const User = require('../Models/UserModel')
 const Post= require('../Models/PostModel')
 const cryptojs = require('crypto-js')
 const jwt = require('jsonwebtoken');
-const { post } = require('../Routes/UserRouter');
 const registerationcontroller = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -44,7 +43,7 @@ const logincontroller = async (req, res) => {
         if (decryptedpassword !== Password) {
             return res.status(401).json({ message: "invalid credential" })
         }
-        const token = jwt.sign({ userId: newuser._id }, process.env.TOKEN_KEY, { expiresIn: '12h' })
+        const token = jwt.sign({ userId: newuser._id }, process.env.TOKEN_KEY,  { expiresIn: '12h' })
         const populatedposts= await Promise.all(
             newuser.post.map(async(postId)=>{
                 const post= await Post.findById(postId)
@@ -61,7 +60,7 @@ const logincontroller = async (req, res) => {
             follower: newuser.follower,
             following: newuser.following
         }
-        return res.cookie('token', token, { httpOnly: true, sameSite: 'strict', maxAge: 1 * 24 * 60 * 60 * 1000 }).json({ message: "account login successfully", user })
+        return res.status(200).json({ message: "account login successfully", token, user });
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: "Internal server error" })
@@ -70,7 +69,7 @@ const logincontroller = async (req, res) => {
 
 const logoutcontroller = async (req, res) => {
     try {
-        return res.cookie('token', "", { maxAge: 0 }).json({ message: "logout successfully" })
+        return res.status(200).cookie('token', "", { maxAge: 0 }).json({ message: "logout successfully" })
     } catch (error) {
         return res.status(500).json({ message: "internal server error" })
     }
@@ -78,7 +77,7 @@ const logoutcontroller = async (req, res) => {
 const getprofile = async (req, res) => {
     try {
         const userId = req.params.id
-        const user = await User.findById(userId).select("-password")
+        const user = await User.findById(userId).populate({path:'post',createAt:-1}).populate({path:'bookmark'}).select("-password")
         return res.status(200).json({ user });
     } catch (error) {
         console.log(error);
@@ -104,6 +103,7 @@ const updatecontroller = async (req, res) => {
         if (gender) user.gender = gender;
         if (profilepicture) user.profilepicture = cloudresponse.secure_url;
         await user.save();
+        // await user.populate({path:'post',createAt:-1}).populate({path:'bookmark'}).select('-password')
         return res.status(200).json({ message: "profile updated successfully", user })
 
     } catch (error) {

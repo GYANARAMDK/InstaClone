@@ -2,8 +2,9 @@ const jwt=require('jsonwebtoken')
 
 const Othentication=async(req,res,next)=>{
     try {
-        const token= req.cookies.token;
+         const token= req.headers.authorization?.split(' ')[1]
         if(!token){
+            console.log(token)
             return res.status(401).json({message:'user not authenticated'})
         }
         const decoded= jwt.verify(token,process.env.TOKEN_KEY)
@@ -13,7 +14,8 @@ const Othentication=async(req,res,next)=>{
         req.id=decoded.userId;
         next();
     } catch (error) {
-        console.log(error)
+        console.error(error)
+         res.status(401).json({message:error})
     }
 }
 

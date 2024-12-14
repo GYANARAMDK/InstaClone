@@ -13,7 +13,12 @@ const app=express();
 
 //middlewares
 app.use(express.json())
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:5173',  // Frontend ka URL
+    credentials: true,  // Allow cookies to be sent
+  };
+  
+  app.use(cors(corsOptions));
 app.use(cookieparser());
 
 app.get('/',(req,res)=>{
