@@ -37,7 +37,7 @@ const logincontroller = async (req, res) => {
         }
         const user = await User.findOne({ email })
         if (!user) {
-            return res.status(402).json({ message: "account not exist" })
+            return res.status(404).json({ message: "account not exist" })
         }
         const decryptedpassword = cryptojs.AES.decrypt(user.password, process.env.PASSWORD_SECRET_KEY).toString(cryptojs.enc.Utf8)
         if (decryptedpassword !== Password) {
