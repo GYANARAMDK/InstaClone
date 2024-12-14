@@ -45,7 +45,9 @@ const logincontroller = async (req, res) => {
         }
         await user.select('-password');
         const token = jwt.sign({ userId: user._id }, process.env.TOKEN_KEY)
-        return res.status(200).json({ message: "account login successfully", token, user });
+        const userobj= user.toObject();
+        delete userobj.password;
+        return res.status(200).json({ message: "account login successfully", token, user:userobj });
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: "Internal server error" })
