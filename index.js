@@ -14,7 +14,8 @@ const app=express();
 //middlewares
 app.use(express.json())
 const corsOptions = {
-    origin: 'http://localhost:5173',  // Frontend ka URL
+    origin:[ 'http://localhost:5173',  // Frontend ka URL
+    'https://message-app-virid.vercel.app'],
     credentials: true,  // Allow cookies to be sent
   };
   
