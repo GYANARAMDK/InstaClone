@@ -1,7 +1,7 @@
 const GetDataUri = require('../Utilis/DataUri');
 const v1 = require('../Utilis/Cloudinary');
 const User = require('../Models/UserModel')
-const Post= require('../Models/PostModel')
+const Post = require('../Models/PostModel')
 const cryptojs = require('crypto-js')
 const jwt = require('jsonwebtoken');
 const registerationcontroller = async (req, res) => {
@@ -40,13 +40,15 @@ const logincontroller = async (req, res) => {
             return res.status(402).json({ message: "account not exist" })
         }
         const decryptedpassword = cryptojs.AES.decrypt(newuser.password, process.env.PASSWORD_SECRET_KEY).toString(cryptojs.enc.Utf8)
+        console.log("Decrypted password:", decryptedpassword); // Debug
+        console.log("Input password:", Password);
         if (decryptedpassword !== Password) {
             return res.status(401).json({ message: "invalid credential" })
         }
-        const token = jwt.sign({ userId: newuser._id }, process.env.TOKEN_KEY,  { expiresIn: '12h' })
-        const populatedposts= await Promise.all(
-            newuser.post.map(async(postId)=>{
-                const post= await Post.findById(postId)
+        const token = jwt.sign({ userId: newuser._id }, process.env.TOKEN_KEY, { expiresIn: '12h' })
+        const populatedposts = await Promise.all(
+            newuser.post.map(async (postId) => {
+                const post = await Post.findById(postId)
                 return post;
             })
         )
@@ -77,7 +79,7 @@ const logoutcontroller = async (req, res) => {
 const getprofile = async (req, res) => {
     try {
         const userId = req.params.id
-        const user = await User.findById(userId).populate({path:'post',createAt:-1}).populate({path:'bookmark'}).select("-password")
+        const user = await User.findById(userId).populate({ path: 'post', createAt: -1 }).populate({ path: 'bookmark' }).select("-password")
         return res.status(200).json({ user });
     } catch (error) {
         console.log(error);
@@ -87,11 +89,11 @@ const getprofile = async (req, res) => {
 
 const updatecontroller = async (req, res) => {
     try {
-        const  userId  = req.id;
+        const userId = req.id;
         const { bio, gender } = req.body;
-        const profilepicture  = req.file;
+        const profilepicture = req.file;
         let cloudresponse;
-       
+
         if (profilepicture) {
             const FileUri = GetDataUri(profilepicture)
             cloudresponse = await v1.uploader.upload(FileUri);
@@ -113,9 +115,9 @@ const updatecontroller = async (req, res) => {
 }
 const GetSuggestedUser = async (req, res) => {
     try {
-   
+
         const suggestedusers = await User.find({ _id: { $ne: req.id } }).select("-password")
-        if (suggestedusers.length===0) {
+        if (suggestedusers.length === 0) {
             return res.status(400).json({ message: "currently do not  have any user " })
         }
         return res.status(200).json({ suggestedusers })
@@ -138,8 +140,8 @@ const Followers = async (req, res) => {
         const isfollowing = user.following.includes(userthatfollowed);
         if (isfollowing) {
             await Promise.all([
-                User.updateOne({ _id:userthatfollow }, { $pull: { following: userthatfollowed } }),
-                User.updateOne({ _id:userthatfollowed }, { $pull: { follower: userthatfollow } })
+                User.updateOne({ _id: userthatfollow }, { $pull: { following: userthatfollowed } }),
+                User.updateOne({ _id: userthatfollowed }, { $pull: { follower: userthatfollow } })
             ])
             return res.status(201).json({ message: `${targetuser.name} removed from following` })
         } else {
