@@ -1,4 +1,4 @@
-const GetDataUri = require('../utilis/DataUri');
+const GetDataUri = require('../Utilis/DataUri');
 const v1 = require('../Utilis/Cloudinary');
 const User = require('../Models/UserModel')
 const Post= require('../Models/PostModel')
