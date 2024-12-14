@@ -43,7 +43,6 @@ const logincontroller = async (req, res) => {
         if (decryptedpassword !== Password) {
             return res.status(401).json({ message: "invalid credential" })
         }
-        await user.select('-password');
         const token = jwt.sign({ userId: user._id }, process.env.TOKEN_KEY)
         const userobj= user.toObject();
         delete userobj.password;
