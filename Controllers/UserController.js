@@ -43,6 +43,7 @@ const logincontroller = async (req, res) => {
         if (decryptedpassword !== Password) {
             return res.status(401).json({ message: "invalid credential" })
         }
+        await user.select('-password');
         const token = jwt.sign({ userId: user._id }, process.env.TOKEN_KEY)
         return res.status(200).json({ message: "account login successfully", token, user });
     } catch (error) {
