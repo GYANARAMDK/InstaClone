@@ -127,13 +127,13 @@ const Followers = async (req, res) => {
                 User.updateOne({ _id:userthatfollow }, { $pull: { following: userthatfollowed } }),
                 User.updateOne({ _id:userthatfollowed }, { $pull: { follower: userthatfollow } })
             ])
-            return res.status(201).json({ message: `${targetuser.name} removed from following` })
+            return res.status(201).json({ message: `${targetuser.name} removed from following`,userthatfollow,userthatfollowed })
         } else {
             await Promise.all([
                 User.updateOne({ _id: userthatfollow }, { $push: { following: userthatfollowed } }),
                 User.updateOne({ _id: userthatfollowed }, { $push: { follower: userthatfollow } })
             ])
-            return res.status(201).json({ message: `${targetuser.name} added to your following ` })
+            return res.status(201).json({ message: `${targetuser.name} added to your following `,userthatfollow,userthatfollowed })
         }
 
     } catch (error) {
