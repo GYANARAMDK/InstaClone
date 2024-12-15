@@ -5,7 +5,7 @@ const Othentication=async(req,res,next)=>{
          const token= req.headers.authorization?.split(' ')[1]
         if(!token){
             console.log(token)
-            return res.status(401).json({message:'user not authenticate'})
+            return res.status(401).json({message:'user not authenticated'})
         }
         const decoded= jwt.verify(token,process.env.TOKEN_KEY)
         if(!decoded){
