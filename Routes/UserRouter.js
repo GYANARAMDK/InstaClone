@@ -9,7 +9,7 @@ router.post('/register',registerationcontroller)
 router.post('/login',logincontroller)
 router.get('/logout',logoutcontroller)
 router.get('/profile/:id',Othentication,getprofile)
-router.patch('/profile/edit',Othentication,upload.single('profilepicture'),updatecontroller)
+router.post('/profile/edit',Othentication,upload.single('profilepicture'),updatecontroller)
 router.get('/suggested',Othentication,GetSuggestedUser)
 router.post('/follow/:id',Othentication,Followers)
 
