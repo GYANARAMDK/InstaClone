@@ -36,6 +36,10 @@ const logincontroller = async (req, res) => {
             return res.status(401).json({ message: "something is missing" })
         }
         const user = await User.findOne({ email })
+        .populate({path:'following'})
+        .populate({path:'follower'})
+        .populate({path:'post'})
+        .populate({path:'bookmark'})
         if (!user) {
             return res.status(404).json({ message: "account not exist" })
         }
