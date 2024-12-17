@@ -9,7 +9,7 @@ const server= http.createServer(app)
 const io= new Server(server,
     {
         cors:{
-            origin: ["https://instaclone-1-187b.onrender.com", "http://localhost:5173"],
+            origin: ["https://message-app-virid.vercel.app/", "http://localhost:5173"],
             methods:['GET','POST']
         }
     }
