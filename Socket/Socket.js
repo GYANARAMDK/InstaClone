@@ -7,15 +7,15 @@ const app= express();
 const server= http.createServer(app)
 
 const io= new Server(server,
-    {
+    {                               //"https://message-app-virid.vercel.app/",
         cors:{
-            origin: ["https://message-app-virid.vercel.app/", "http://localhost:5173/"],
+            origin:  "http://localhost:5173",
             methods:['GET','POST']
         }
     }
 )
 const usersocketmap={}
-
+const GetReciverSocketId=(recieverId)=> usersocketmap[recieverId]
 io.on('connection',(socket)=>{
     const userid= socket.handshake.query.userid;
     if(userid){
@@ -32,4 +32,4 @@ io.on('connection',(socket)=>{
     })
 })
 
-module.exports={server,io,app};
+module.exports={server,io,app,GetReciverSocketId};

@@ -3,6 +3,7 @@ const Post = require("../Models/PostModel");
 const User = require("../Models/UserModel");
 const Comment = require("../Models/CommentModel");
 const cloudinary_js_config = require("../Utilis/Cloudinary");
+const { GetReciverSocketId } = require("../Socket/Socket");
 
 const NewPost = async (req, res) => {
     try {
@@ -79,6 +80,19 @@ const LikePost = async (req, res) => {
         await post.save()
 
         //socket.io
+        const user = await User.findById(userId).select('name profilepicture')
+        const postownerid = post.author.toString()
+        if (postownerid !== userId) {
+            const notification = {
+                type: 'like',
+                userId,
+                postId,
+                message: 'liked your post',
+                userdetails: user
+            }
+            const postonwerSocketId = GetReciverSocketId(postownerid)
+            io.to(postonwerSocketId).emit('notification', notification)
+        }
 
         return res.status(201).json({ message: "post liked" })
     } catch (error) {
@@ -96,6 +110,19 @@ const DisLikePost = async (req, res) => {
         await post.save()
 
         //socket.io
+        const user = await User.findById(userId).select('name profilepicture')
+        const postownerid = post.author.toString()
+        if (postownerid !== userId) {
+            const notification = {
+                type: 'dislike',
+                userId,
+                postId,
+                message: 'liked your post',
+                userdetails: user
+            }
+            const postonwerSocketId = GetReciverSocketId(postownerid)
+            io.to(postonwerSocketId).emit('notification', notification)
+        }
 
         return res.status(201).json({ message: "post disliked" })
     } catch (error) {
@@ -120,12 +147,12 @@ const AddComment = async (req, res) => {
             post: postId
         })
         await comment.save();
-       
-        await comment.populate({path:'author',select: "name profilepicture"})
+
+        await comment.populate({ path: 'author', select: "name profilepicture" })
         post.comments.push(comment._id);
         await post.save();
-        return res.status(201).json({ message: "comment added",comment })
-         
+        return res.status(201).json({ message: "comment added", comment })
+
     } catch (error) {
         console.log(error)
         return res.status(500).json({ message: "internal server error" })

@@ -1,5 +1,6 @@
 const Message = require('../Models/MessageModel')
-const Conversation = require('../Models/ConversationModel')
+const Conversation = require('../Models/ConversationModel');
+const { GetReciverSocketId, io } = require('../Socket/Socket');
 const SendMessage = async (req, res) => {
     try {
 
@@ -28,6 +29,11 @@ const SendMessage = async (req, res) => {
         ])
 
         //implement socket.io for real time
+
+        const reciverSocketId= GetReciverSocketId(recieverId)
+        if(reciverSocketId){
+            io.to(reciverSocketId).emit('newMessage',newmessage)
+        }
         return res.status(201).json({newmessage})
     } catch (error) {
         console.log(error)
