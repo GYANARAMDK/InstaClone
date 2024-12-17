@@ -24,10 +24,9 @@ const SendMessage = async (req, res) => {
             message: message,
         })
         if (newmessage) conversation.message.push(newmessage._id)
-        await Promise.all([
-            conversation.save(),
-            newmessage.save(),
-        ])
+        await conversation.save(),
+        await newmessage.save(),
+        
          console.log("new message", newmessage)
         //implement socket.io for real time
 
@@ -50,8 +49,9 @@ const GetMessage= async(req,res)=>{
         const conversation=await Conversation.findOne({
             participants:{$all:[senderId,recieverId]}
         }).populate('message') 
-        if(!conversation) return res.status(200).json({messages:[]})
-        return res.status(200).json({messages:conversation?.message})
+        if(!conversation) return res.status(200).json({message:[]})
+            console.log("conversation",conversation)
+        return res.status(200).json({message:conversation?.message})
     } catch (error) {
         console.log(error)
         return res.status(500).json({message:"internal server error"})
