@@ -7,7 +7,8 @@ const SendMessage = async (req, res) => {
         const senderId = req.id;
         const recieverId = req.params.id;
         const { message } = req.body;
-
+        console.log(message)
+        console.log("hello")
         let conversation = await Conversation.findOne({
             participants: { $all: [senderId, recieverId] }
         })
@@ -27,8 +28,7 @@ const SendMessage = async (req, res) => {
             conversation.save(),
             newmessage.save(),
         ])
-          console.log(message)
-          console.log("hello")
+         
         //implement socket.io for real time
 
         const reciverSocketId= GetReciverSocketId(recieverId)
@@ -37,6 +37,7 @@ const SendMessage = async (req, res) => {
         }
         return res.status(201).json({newmessage})
     } catch (error) {
+        console.log(error.stack);
         console.log(error)
         return res.status(500).json({ message: "internal server error" })
     }
@@ -48,7 +49,7 @@ const GetMessage= async(req,res)=>{
         const recieverId=req.params.id;
         const conversation=await Conversation.find({
             participants:{$all:{senderId,recieverId}}
-        })
+        }).populate('message') 
         if(!conversation) return res.status(200).json({messages:[]})
         return res.status(200).json({messages:conversation?.message})
     } catch (error) {
