@@ -9,7 +9,8 @@ const userrouter = require('./Routes/UserRouter');
 const postrouter = require('./Routes/PostRouter')
 const messagerouter= require('./Routes/MessageRouter')
 const PORT=3000;
-const app=express();
+const {app,server} =require('./Socket/Socket')
+
 
 //middlewares
 app.use(express.json())
@@ -31,6 +32,6 @@ app.use('/api/v1/post',postrouter)
 app.use('/api/v1/message',messagerouter)
 
 
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     console.log(`server is running at ${PORT}`)
 })
