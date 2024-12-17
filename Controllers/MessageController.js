@@ -28,7 +28,7 @@ const SendMessage = async (req, res) => {
             conversation.save(),
             newmessage.save(),
         ])
-         
+         console.log("new message", newmessage)
         //implement socket.io for real time
 
         const reciverSocketId= GetReciverSocketId(recieverId)
