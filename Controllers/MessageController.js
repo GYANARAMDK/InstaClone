@@ -34,6 +34,7 @@ const SendMessage = async (req, res) => {
         if(reciverSocketId){
             io.to(reciverSocketId).emit('newMessage',newmessage)
         }
+        console.log("reciversocketid",reciverSocketId)
         return res.status(201).json({newmessage})
     } catch (error) {
         console.log(error.stack);
