@@ -15,7 +15,11 @@ const io= new Server(server,
     }
 )
 const usersocketmap={}
-const GetReciverSocketId=(recieverId)=> usersocketmap[recieverId]
+const GetReciverSocketId = (receiverId) => {
+    console.log("Checking receiverId:", receiverId);
+    console.log("Current usersocketmap:", usersocketmap);
+    return usersocketmap[receiverId];
+};
 io.on('connection',(socket)=>{
     const userid= socket.handshake.query.userid;
     if(userid){
