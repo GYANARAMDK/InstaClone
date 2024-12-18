@@ -123,7 +123,15 @@ const Followers = async (req, res) => {
             return res.status(400).json({ message: "user not found" })
         }
         const user = await User.findById(userthatfollow)
-        const targetuser = await User.findById(userthatfollowed);
+        .populate({path:'following'})
+        .populate({path:'follower'})
+        .populate({path:'post'})
+        .populate({path:'bookmark'})
+        const targetuser = await User.findById(userthatfollowed)
+        .populate({path:'following'})
+        .populate({path:'follower'})
+        .populate({path:'post'})
+        .populate({path:'bookmark'});
 
         const isfollowing = user.following.includes(userthatfollowed);
         if (isfollowing) {
