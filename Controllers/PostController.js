@@ -91,6 +91,7 @@ const LikePost = async (req, res) => {
                 userdetails: user
             }
             const postonwerSocketId = GetReciverSocketId(postownerid)
+            console.log("at time liked reciversocketid",postonwerSocketId)
             io.to(postonwerSocketId).emit('notification', notification)
         }
 
@@ -121,6 +122,7 @@ const DisLikePost = async (req, res) => {
                 userdetails: user
             }
             const postonwerSocketId = GetReciverSocketId(postownerid)
+            console.log("at time liked reciversocketid",postonwerSocketId)
             io.to(postonwerSocketId).emit('notification', notification)
         }
 
